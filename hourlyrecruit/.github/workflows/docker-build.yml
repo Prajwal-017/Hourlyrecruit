@@ -30,7 +30,7 @@ jobs:
         run: mvn clean package -DskipTests
         working-directory: .
 
-      # DockerHub login
+      # DockerH login
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
