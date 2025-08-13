@@ -19,44 +19,15 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn -f your-subfolder-name/pom.xml clean package -DskipTests
+        run: mvn clean package -DskipTests
+        working-directory: hourlyrecruit
 
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest ./your-subfolder-name
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest
-name: Build and Push Docker Image
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Build with Maven
-        run: mvn -f your-subfolder-name/pom.xml clean package -DskipTests
-
-      - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest ./your-subfolder-name
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest .
+        working-directory: hourlyrecruit
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest
