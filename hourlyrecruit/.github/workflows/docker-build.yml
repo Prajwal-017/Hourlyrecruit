@@ -10,41 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout source code
+      # Checkout code
       - name: Checkout source code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      # Step 2: Set up JDK 17
+      # Set up Java
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # Step 3: Find project folder automatically
-      - name: Detect pom.xml directory
-        id: detect-pom
-        run: |
-          POM_DIR=$(find . -name "pom.xml" -exec dirname {} \; | head -n 1)
-          echo "Found pom.xml in: $POM_DIR"
-          echo "POM_DIR=$POM_DIR" >> $GITHUB_ENV
+      # Debug file structure
+      - name: Check files
+        run: ls -R
 
-      # Step 4: Build with Maven
+      # Build Maven project
       - name: Build with Maven
-        run: mvn -B clean package -DskipTests
-        working-directory: ${{ env.POM_DIR }}
+        run: mvn clean package -DskipTests
+        working-directory: .
 
-      # Step 5: Log in to DockerHub
+      # DockerHub login
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Step 6: Build Docker image
+      # Build Docker image
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest .
-        working-directory: ${{ env.POM_DIR }}
 
-      # Step 7: Push Docker image
+      # Push Docker image
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/hr-backend:latest
