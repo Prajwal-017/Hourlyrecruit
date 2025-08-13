@@ -10,5 +10,5 @@ public class HourlyrecruitApplication {
 		SpringApplication.run(HourlyrecruitApplication.class, args);
 	}
 
-	//hello prajwal
+	//hello prajwal 
 }
